@@ -116,14 +116,16 @@ export default function Schedule() {
         }
     };
     
-    // Handle date change
-    const handleDateChange = (value: any) => {
+    const handleDateChange = (
+        value: Date | Date[] | null | [Date | null, Date | null],
+        event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+      ) => {
         if (value instanceof Date) {
-            setDate(value);
+          setDate(value);
         } else if (Array.isArray(value) && value[0] instanceof Date) {
-            setDate(value[0]);
+          setDate(value[0]);
         }
-    };
+      };
     
     // Filter appointments based on view mode
     useEffect(() => {
@@ -441,10 +443,6 @@ export default function Schedule() {
         );
     };
     
-    // Check if user can view this appointment
-    const canViewAppointment = (appointment: Appointment) => {
-        return isCreator(appointment.creator_id) || isParticipant(appointment);
-    };
     
     if (!isAuthenticated) {
         return (

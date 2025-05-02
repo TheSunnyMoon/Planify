@@ -52,7 +52,6 @@ export async function PUT(
     // Replace your current transaction code with this one
     
     // Approach without Promise
-    let result;
     await sql.transaction((tx) => {
       // 1. Update the appointment
       const updateQuery = tx`
@@ -121,7 +120,7 @@ export async function PUT(
                a.appointment_date, a.appointment_time, a.duration, a.created_at
     `;
 
-    result = updatedAppointment[0];
+    const result = updatedAppointment[0];
     
     return NextResponse.json({ 
       success: true, 

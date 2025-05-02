@@ -1,8 +1,10 @@
 "use client";
 
-import { Calendar, Home, Inbox, Menu, Search, Settings, X } from "lucide-react";
+import { Calendar, Home, Inbox, Menu, Settings, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import Image from 'next/image';
+
 
 import {
   Sidebar,
@@ -92,7 +94,13 @@ export function AppSidebar() {
             isExpanded ? "w-64" : "w-16"
           )}>
             <div className="flex items-center">
-              <img src="../favicon.ico" alt="Logo" className="h-8 w-8" />
+            <Image 
+              src="/favicon.ico" 
+              alt="Logo" 
+              width={32} 
+              height={32} 
+              className="h-8 w-8"
+            />
               <span className={cn(
                 "ml-2 text-lg font-bold transition-all", 
                 isExpanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden"

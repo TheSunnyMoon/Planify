@@ -56,9 +56,9 @@ export default function RegisterPage() {
       // Redirect to login page after successful registration
       router.push("/login?success=true");
       
-    } catch (error: any) {
-      console.error("Registration error:", error);
-      setError(error.message || "An error occurred during registration");
+    } catch (error: Error | unknown) {
+        console.error("Registration error:", error);
+        setError(error instanceof Error ? error.message : "An error occurred during registration");
     } finally {
       setIsLoading(false);
     }

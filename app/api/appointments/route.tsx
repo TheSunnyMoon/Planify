@@ -202,12 +202,12 @@ export async function POST(request: Request) {
               a.appointment_date, a.appointment_time, a.duration, a.created_at
     `;
 
-    result = completeAppointment[0];
+    
     
     return NextResponse.json({ 
       success: true, 
       message: "Appointment created successfully",
-      appointment: result
+      appointment: completeAppointment[0]
     });
     
   } catch (error) {
