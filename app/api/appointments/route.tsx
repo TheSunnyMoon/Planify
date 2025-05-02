@@ -134,7 +134,6 @@ export async function POST(request: Request) {
     
     // Create the appointment - approach without Promise in the transaction function
     let appointmentId;
-    let result;
 
     await sql.transaction((tx) => {
       // 1. Insert the main appointment

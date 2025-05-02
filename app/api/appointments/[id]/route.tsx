@@ -120,12 +120,12 @@ export async function PUT(
                a.appointment_date, a.appointment_time, a.duration, a.created_at
     `;
 
-    const result = updatedAppointment[0];
+    
     
     return NextResponse.json({ 
       success: true, 
       message: "Appointment updated successfully",
-      appointment: result
+      appointment: updatedAppointment[0]
     });
     
   } catch (error) {
