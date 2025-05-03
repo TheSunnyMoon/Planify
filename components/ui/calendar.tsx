@@ -118,7 +118,6 @@ export default function Schedule() {
     
     const handleDateChange = (
         value: Date | Date[] | null | [Date | null, Date | null],
-        event: React.MouseEvent<HTMLButtonElement, MouseEvent>
       ) => {
         if (value instanceof Date) {
           setDate(value);
@@ -330,7 +329,6 @@ export default function Schedule() {
                 }
             }
             
-            const result = await response.json();
             
             // Close dialog and reset form
             setIsDialogOpen(false);
@@ -436,12 +434,6 @@ export default function Schedule() {
         return creatorId === currentUserId;
     };
     
-    // Check if current user is a participant in the appointment
-    const isParticipant = (appointment: Appointment) => {
-        return appointment.participants.some(
-            p => p.user_id === currentUserId || p.email === session?.user?.email
-        );
-    };
     
     
     if (!isAuthenticated) {
