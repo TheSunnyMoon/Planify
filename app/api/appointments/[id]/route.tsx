@@ -6,48 +6,51 @@ import { authOptions } from "@/lib/auth";
 // Update an existing appointment
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> } // Adjusted type
 ) {
   try {
+    const resolvedParams = await params; // Await the promise to get the actual value
+    const { id } = resolvedParams;
+
     // Verify authentication
     const session = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    
+
     const userId = session.user.id;
-    const { id } = params;
-    
+
     const { title, description, appointmentDate, appointmentTime, duration, participants } = await request.json();
-    
+
     // Data validation
     if (!title || !appointmentDate || !appointmentTime) {
       return NextResponse.json({ 
         error: "Essential information is required" 
       }, { status: 400 });
     }
-    
+
     if (!process.env.DATABASE_URL) {
       console.error("DATABASE_URL is not defined");
       return NextResponse.json({ error: "Incorrect server configuration" }, { status: 500 });
     }
-    
+
     const sql = neon(process.env.DATABASE_URL);
-    
+
     // Check if the appointment exists and if the user is the creator
     const existingAppointment = await sql`
       SELECT * FROM appointments WHERE id = ${id}
     `;
-    
+
     if (existingAppointment.length === 0) {
       return NextResponse.json({ error: "Appointment not found" }, { status: 404 });
     }
-    
+
     if (existingAppointment[0].creator_id !== userId) {
       return NextResponse.json({ 
         error: "You are not authorized to modify this appointment" 
       }, { status: 403 });
     }
+
 
     // Replace your current transaction code with this one
     
@@ -121,13 +124,12 @@ export async function PUT(
     `;
 
     
-    
     return NextResponse.json({ 
       success: true, 
       message: "Appointment updated successfully",
       appointment: updatedAppointment[0]
     });
-    
+
   } catch (error) {
     console.error("Error updating appointment:", error);
     return NextResponse.json({ 
@@ -137,10 +139,9 @@ export async function PUT(
   }
 }
 
-// Delete an appointment
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> } // Fix: same type as PUT function
 ) {
   try {
     // Verify authentication
@@ -150,7 +151,8 @@ export async function DELETE(
     }
     
     const userId = session.user.id;
-    const { id } = params;
+    const resolvedParams = await params; // Await the promise to get the value
+    const { id } = resolvedParams;
     
     if (!process.env.DATABASE_URL) {
       console.error("DATABASE_URL is not defined");

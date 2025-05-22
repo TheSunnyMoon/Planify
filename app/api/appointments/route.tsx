@@ -102,17 +102,16 @@ export async function POST(request: Request) {
     
     const sql = neon(process.env.DATABASE_URL);
     
-    // Check participants if present
     if (participants && participants.length > 0) {
       const emailList = participants.map((p: { email: string }) => p.email);
       
       // Search for emails in the database
-      const existingUsers = await sql`
+      const existingUsersResult = await sql`
         SELECT email FROM users WHERE email IN ${sql(emailList)}
       `;
       
-      // Get existing emails as an array
-      const existingEmails = existingUsers.map((user: Record<string, any>) => user.email as string);
+      // Extract just the email values from the result
+      const existingEmails = existingUsersResult.map(user => user.email);
       
       // Find emails that are not in the database
       const unknownEmails = emailList.filter((email: string) => 
@@ -132,8 +131,6 @@ export async function POST(request: Request) {
     // Use default duration if not specified
     const appointmentDuration = duration || 30;
     
-    // Create the appointment - approach without Promise in the transaction function
-    let appointmentId;
 
     await sql.transaction((tx) => {
       // 1. Insert the main appointment
@@ -176,8 +173,7 @@ export async function POST(request: Request) {
 
     // After the transaction, get the ID and then the complete appointment
     const idResult = await sql`SELECT id FROM appointments ORDER BY created_at DESC LIMIT 1`;
-    appointmentId = idResult[0].id;
-
+    const appointmentId = idResult[0].id;
     // Get the appointment with its participants
     const completeAppointment = await sql`
       SELECT 
