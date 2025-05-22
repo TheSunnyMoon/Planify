@@ -73,9 +73,8 @@ interface BookingData {
 
 export default function Schedule() {
     // Get user session
-    const { data: session, status } = useSession();
+    const { data: session } = useSession();
     const currentUserId = session?.user?.id as string;
-    const isAuthenticated = status === "authenticated";
     
     const [date, setDate] = useState<Date>(new Date());
     const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -317,7 +316,6 @@ export default function Schedule() {
                 }
             }
             
-            const result = await response.json();
             
             // Close dialog and reset form
             setIsDialogOpen(false);
@@ -423,12 +421,7 @@ export default function Schedule() {
         return creatorId === currentUserId;
     };
     
-    // Check if current user is a participant in the appointment
-    const isParticipant = (appointment: Appointment) => {
-        return appointment.participants.some(
-            p => p.user_id === currentUserId || p.email === session?.user?.email
-        );
-    };
+ 
     
     return (
         <div className="container mx-auto p-4">
